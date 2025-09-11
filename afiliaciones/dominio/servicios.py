@@ -4,7 +4,7 @@ from .entidades import Campana
 from .repositorios import RepositorioCampana
 from .reglas import PresupuestoDebeSerPositivo, CampanaDebeTenerNombre
 from .excepciones import PresupuestoInvalidoExcepcion, EstadoCampanaInvalidoExcepcion
-from .objetos_valor import TipoCampana
+from .objetos_valor import TipoCampana, InfluencerInfo, InfluencerInfo
 
 
 class ServicioCampana:
@@ -12,7 +12,8 @@ class ServicioCampana:
         self.repositorio = repositorio
 
     def crear_campana(self, id_marca: uuid.UUID, nombre: str, descripcion: str,
-                      tipo: str, presupuesto: float) -> Campana:
+                      tipo: str, presupuesto: float, nombre_marca: str, 
+                      influencers: List[InfluencerInfo], fecha_inicio=None, fecha_fin=None) -> Campana:
         # Validar reglas de negocio
         if not PresupuestoDebeSerPositivo(presupuesto).es_valido():
             raise PresupuestoInvalidoExcepcion(presupuesto)
@@ -26,7 +27,11 @@ class ServicioCampana:
             nombre=nombre,
             descripcion=descripcion,
             tipo=TipoCampana(tipo),
-            presupuesto=presupuesto
+            presupuesto=presupuesto,
+            nombre_marca=nombre_marca,
+            influencers=influencers,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin
         )
 
         # Guardar en repositorio

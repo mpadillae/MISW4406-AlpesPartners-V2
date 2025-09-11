@@ -3,6 +3,7 @@ import uuid
 from dominio.servicios import ServicioCampana
 from dominio.repositorios import RepositorioCampana
 from dominio.eventos import CampanaCreada
+from dominio.objetos_valor import InfluencerInfo
 from infraestructura.despachadores import Despachador
 
 
@@ -12,14 +13,28 @@ class ServicioAplicacionCampana:
         self.despachador = despachador
 
     async def crear_campana(self, id_marca: uuid.UUID, nombre: str, descripcion: str,
-                            tipo: str, presupuesto: float):
+                            tipo: str, presupuesto: float, nombre_marca: str, influencers: List,
+                            fecha_inicio=None, fecha_fin=None):
+        influencers_info = [
+            InfluencerInfo(
+                nombre=inf.nombre,
+                plataforma=inf.plataforma,
+                seguidores=inf.seguidores,
+                categoria=inf.categoria
+            ) for inf in influencers
+        ]
+        
         # Crear campaña usando el servicio de dominio
         campana = self.servicio_dominio.crear_campana(
             id_marca=id_marca,
             nombre=nombre,
             descripcion=descripcion,
             tipo=tipo,
-            presupuesto=presupuesto
+            presupuesto=presupuesto,
+            nombre_marca=nombre_marca,
+            influencers=influencers_info,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin
         )
 
         # Crear evento de dominio
@@ -31,7 +46,14 @@ class ServicioAplicacionCampana:
             tipo=campana.tipo.value,
             estado=campana.estado.value,
             fecha_creacion=campana.fecha_creacion,
-            presupuesto=campana.presupuesto
+            presupuesto=campana.presupuesto,
+            nombre_marca=campana.nombre_marca,
+            influencers=[{
+                'nombre': inf.nombre,
+                'plataforma': inf.plataforma,
+                'seguidores': inf.seguidores,
+                'categoria': inf.categoria
+            } for inf in campana.influencers]
         )
 
         # Publicar evento

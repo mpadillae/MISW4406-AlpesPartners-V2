@@ -44,6 +44,8 @@ class Despachador:
                 productor.close()
 
     def _crear_payload_campana_creada(self, evento: CampanaCreada):
+        influencers_json = json.dumps(evento.influencers) if evento.influencers else "[]"
+        
         return {
             "id": str(evento.id),
             "id_campana": str(evento.id_campana),
@@ -53,7 +55,9 @@ class Despachador:
             "tipo": evento.tipo,
             "estado": evento.estado,
             "fecha_creacion": int(evento.fecha_creacion.timestamp() * 1000),
-            "presupuesto": evento.presupuesto
+            "presupuesto": evento.presupuesto,
+            "nombre_marca": evento.nombre_marca if evento.nombre_marca else "",
+            "influencers": influencers_json
         }
 
     def _crear_payload_campana_iniciada(self, evento: CampanaIniciada):

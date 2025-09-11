@@ -11,6 +11,17 @@ class ServicioMarca:
         self.repositorio_campana = repositorio_campana
 
     def procesar_campana_creada(self, evento_data: dict) -> CampanaMarca:
+        # Obtener o crear la marca
+        id_marca = uuid.UUID(evento_data.get('id_marca'))
+        marca_existente = self.repositorio_marca.obtener_por_id(id_marca)
+        
+        if not marca_existente:
+            marca = Marca()
+            marca.id_marca = id_marca
+            marca.nombre = evento_data.get('nombre_marca', f"Marca {id_marca}")
+            marca.categoria = evento_data.get('marca_categoria', "General")
+            self.repositorio_marca.agregar(marca)
+
         # Crear o actualizar campaña de marca
         campana = CampanaMarca()
         campana.procesar_campana_creada(evento_data)

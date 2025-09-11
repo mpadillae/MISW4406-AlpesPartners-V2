@@ -20,7 +20,11 @@ class ManejadorCrearCampana(ManejadorComando):
             nombre=comando.nombre,
             descripcion=comando.descripcion,
             tipo=comando.tipo,
-            presupuesto=comando.presupuesto
+            presupuesto=comando.presupuesto,
+            nombre_marca=comando.nombre_marca,
+            influencers=comando.influencers,
+            fecha_inicio=comando.fecha_inicio,
+            fecha_fin=comando.fecha_fin
         )
         return MapeadorCampana.entidad_a_dto(campana)
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
+from typing import List
 
 
 @dataclass
@@ -19,6 +20,8 @@ class CampanaCreada(EventoDominio):
     estado: str = None
     fecha_creacion: datetime = None
     presupuesto: float = 0.0
+    nombre_marca: str = None
+    influencers: List = field(default_factory=list)
 
 
 @dataclass
