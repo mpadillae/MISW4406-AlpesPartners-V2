@@ -30,3 +30,11 @@ class DatosMarca:
     id_marca: str
     nombre: str
     categoria: str
+
+
+@dataclass(frozen=True)
+class InfluencerInfo:
+    nombre: str
+    plataforma: str
+    seguidores: int
+    categoria: str

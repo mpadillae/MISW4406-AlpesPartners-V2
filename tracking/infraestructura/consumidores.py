@@ -19,7 +19,7 @@ class ConsumidorEventosTracking:
         repositorio_tracking = RepositorioEventoTrackingSQLAlchemy()
         repositorio_campana = RepositorioMetricasCampanaSQLAlchemy()
         self.servicio = ServicioTracking(
-            repositorio_tracking, repositorio_campana)
+            repositorio_campana, repositorio_tracking)
 
     def consumir_eventos_campana(self, topico: str, suscripcion: str):
         try:

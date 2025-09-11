@@ -1,13 +1,15 @@
-from sqlalchemy import create_engine, Column, String, DateTime, Float, UUID
+from sqlalchemy import create_engine, Column, String, DateTime, Float, UUID, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from typing import List, Optional
 import uuid
 import os
+import json
 from datetime import datetime
 
 from dominio.entidades import Campana
 from dominio.repositorios import RepositorioCampana
+from dominio.objetos_valor import InfluencerInfo
 from .dto import CampanaDTO
 
 Base = declarative_base()
@@ -26,6 +28,8 @@ class CampanaDB(Base):
     fecha_inicio = Column(DateTime, nullable=True)
     fecha_fin = Column(DateTime, nullable=True)
     presupuesto = Column(Float, nullable=False)
+    nombre_marca = Column(String(100), nullable=True)
+    influencers = Column(JSON, nullable=True)
 
 
 class RepositorioCampanaSQLAlchemy(RepositorioCampana):
@@ -67,6 +71,13 @@ class RepositorioCampanaSQLAlchemy(RepositorioCampana):
             campana_db.fecha_inicio = campana.fecha_inicio
             campana_db.fecha_fin = campana.fecha_fin
             campana_db.presupuesto = campana.presupuesto
+            campana_db.nombre_marca = campana.nombre_marca
+            campana_db.influencers = json.dumps([{
+                'nombre': inf.nombre,
+                'plataforma': inf.plataforma,
+                'seguidores': inf.seguidores,
+                'categoria': inf.categoria
+            } for inf in campana.influencers]) if campana.influencers else "[]"
             self.session.commit()
             return self._db_a_entidad(campana_db)
         return campana
@@ -91,11 +102,33 @@ class RepositorioCampanaSQLAlchemy(RepositorioCampana):
             fecha_creacion=campana.fecha_creacion,
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
-            presupuesto=campana.presupuesto
+            presupuesto=campana.presupuesto,
+            nombre_marca=campana.nombre_marca,
+            influencers=json.dumps([{
+                'nombre': inf.nombre,
+                'plataforma': inf.plataforma,
+                'seguidores': inf.seguidores,
+                'categoria': inf.categoria
+            } for inf in campana.influencers]) if campana.influencers else "[]"
         )
 
     def _db_a_entidad(self, campana_db: CampanaDB) -> Campana:
-        from dominio.objetos_valor import TipoCampana, EstadoCampana
+        from dominio.objetos_valor import TipoCampana, EstadoCampana, InfluencerInfo
+        
+        influencers = []
+        if campana_db.influencers:
+            try:
+                influencers_data = json.loads(campana_db.influencers) if isinstance(campana_db.influencers, str) else campana_db.influencers
+                influencers = [
+                    InfluencerInfo(
+                        nombre=inf['nombre'],
+                        plataforma=inf['plataforma'],
+                        seguidores=inf['seguidores'],
+                        categoria=inf['categoria']
+                    ) for inf in influencers_data
+                ]
+            except (json.JSONDecodeError, KeyError):
+                influencers = []
 
         return Campana(
             id=campana_db.id,
@@ -107,5 +140,7 @@ class RepositorioCampanaSQLAlchemy(RepositorioCampana):
             fecha_creacion=campana_db.fecha_creacion,
             fecha_inicio=campana_db.fecha_inicio,
             fecha_fin=campana_db.fecha_fin,
-            presupuesto=campana_db.presupuesto
+            presupuesto=campana_db.presupuesto,
+            nombre_marca=campana_db.nombre_marca,
+            influencers=influencers
         )

@@ -20,6 +20,8 @@ class CampanaCreadaPayload(Record):
     estado = String()
     fecha_creacion = Long()
     presupuesto = Double()
+    nombre_marca = String()
+    influencers = String()
 
 
 class EventoCampanaCreada(EventoIntegracion):

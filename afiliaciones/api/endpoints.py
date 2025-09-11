@@ -32,11 +32,15 @@ async def crear_campana(
 ):
     try:
         comando = CrearCampana(
-            id_marca=request.id_marca,
+            id_marca=request.marca.id_marca,
             nombre=request.nombre,
             descripcion=request.descripcion,
             tipo=request.tipo,
-            presupuesto=request.presupuesto
+            presupuesto=request.presupuesto,
+            nombre_marca=request.marca.nombre_marca,
+            influencers=request.influencers,
+            fecha_inicio=request.fecha_inicio,
+            fecha_fin=request.fecha_fin
         )
 
         manejador = ManejadorCrearCampana(servicio)

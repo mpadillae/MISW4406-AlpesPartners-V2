@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
 from typing import List, Optional
-from .objetos_valor import EstadoCampana, TipoCampana
+from .objetos_valor import EstadoCampana, TipoCampana, InfluencerInfo
 from .eventos import CampanaCreada, CampanaIniciada
 
 
@@ -18,6 +18,8 @@ class Campana:
     fecha_inicio: Optional[datetime] = None
     fecha_fin: Optional[datetime] = None
     presupuesto: float = 0.0
+    nombre_marca: str = None
+    influencers: List[InfluencerInfo] = field(default_factory=list)
     _eventos: List = field(default_factory=list, init=False)
 
     def iniciar_campana(self):
