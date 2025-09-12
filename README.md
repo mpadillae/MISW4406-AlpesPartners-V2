@@ -3,6 +3,9 @@
 Este proyecto implementa un sistema de microservicios para la gestión de campañas de marketing utilizando arquitectura hexagonal y patrones de diseño como CQRS, DDD y Event-Driven Architecture.
 
 ## Arquitectura
+<img width="1700" height="1100" alt="diagramas-Funcional entrega 4 drawio" src="https://github.com/user-attachments/assets/b34cbe9b-9da6-4ed0-a323-985c2af099d4" />
+
+<img width="688" height="733" alt="diagramas-modulo entrega 4 drawio-2" src="https://github.com/user-attachments/assets/1987dc59-a49b-44bf-a3bf-6276331cc684" />
 
 El sistema está compuesto por 4 microservicios independientes:
 
