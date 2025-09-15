@@ -1,9 +1,7 @@
-from sqlalchemy import create_engine, Column, String, DateTime, Float, UUID, JSON
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import Column, String, DateTime, Float, UUID, JSON
+from sqlalchemy.orm import Session
 from typing import List, Optional
 import uuid
-import os
 import json
 from datetime import datetime
 
@@ -11,8 +9,7 @@ from dominio.entidades import Campana
 from dominio.repositorios import RepositorioCampana
 from dominio.objetos_valor import InfluencerInfo
 from .dto import CampanaDTO
-
-Base = declarative_base()
+from .database import Base, db_manager
 
 
 class CampanaDB(Base):
@@ -34,62 +31,60 @@ class CampanaDB(Base):
 
 class RepositorioCampanaSQLAlchemy(RepositorioCampana):
     def __init__(self):
-        database_url = os.getenv(
-            "DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/afiliaciones")
-        self.engine = create_engine(database_url)
-        Base.metadata.create_all(bind=self.engine)
-        SessionLocal = sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine)
-        self.session = SessionLocal()
+        pass
 
     def obtener_por_id(self, id_campana: uuid.UUID) -> Optional[Campana]:
-        campana_db = self.session.query(CampanaDB).filter(
-            CampanaDB.id == id_campana).first()
-        if campana_db:
-            return self._db_a_entidad(campana_db)
-        return None
+        with db_manager.get_session() as session:
+            campana_db = session.query(CampanaDB).filter(
+                CampanaDB.id == id_campana).first()
+            if campana_db:
+                return self._db_a_entidad(campana_db)
+            return None
 
     def obtener_todas(self) -> List[Campana]:
-        campanas_db = self.session.query(CampanaDB).all()
-        return [self._db_a_entidad(campana_db) for campana_db in campanas_db]
+        with db_manager.get_session() as session:
+            campanas_db = session.query(CampanaDB).all()
+            return [self._db_a_entidad(campana_db) for campana_db in campanas_db]
 
     def agregar(self, campana: Campana) -> Campana:
-        campana_db = self._entidad_a_db(campana)
-        self.session.add(campana_db)
-        self.session.commit()
-        self.session.refresh(campana_db)
-        return self._db_a_entidad(campana_db)
+        with db_manager.get_session() as session:
+            campana_db = self._entidad_a_db(campana)
+            session.add(campana_db)
+            session.flush()  # Para obtener el ID generado
+            session.refresh(campana_db)
+            return self._db_a_entidad(campana_db)
 
     def actualizar(self, campana: Campana) -> Campana:
-        campana_db = self.session.query(CampanaDB).filter(
-            CampanaDB.id == campana.id).first()
-        if campana_db:
-            campana_db.nombre = campana.nombre
-            campana_db.descripcion = campana.descripcion
-            campana_db.tipo = campana.tipo.value if campana.tipo else "influencer"
-            campana_db.estado = campana.estado.value if campana.estado else "creada"
-            campana_db.fecha_inicio = campana.fecha_inicio
-            campana_db.fecha_fin = campana.fecha_fin
-            campana_db.presupuesto = campana.presupuesto
-            campana_db.nombre_marca = campana.nombre_marca
-            campana_db.influencers = json.dumps([{
-                'nombre': inf.nombre,
-                'plataforma': inf.plataforma,
-                'seguidores': inf.seguidores,
-                'categoria': inf.categoria
-            } for inf in campana.influencers]) if campana.influencers else "[]"
-            self.session.commit()
-            return self._db_a_entidad(campana_db)
-        return campana
+        with db_manager.get_session() as session:
+            campana_db = session.query(CampanaDB).filter(
+                CampanaDB.id == campana.id).first()
+            if campana_db:
+                campana_db.nombre = campana.nombre
+                campana_db.descripcion = campana.descripcion
+                campana_db.tipo = campana.tipo.value if campana.tipo else "influencer"
+                campana_db.estado = campana.estado.value if campana.estado else "creada"
+                campana_db.fecha_inicio = campana.fecha_inicio
+                campana_db.fecha_fin = campana.fecha_fin
+                campana_db.presupuesto = campana.presupuesto
+                campana_db.nombre_marca = campana.nombre_marca
+                campana_db.influencers = json.dumps([{
+                    'nombre': inf.nombre,
+                    'plataforma': inf.plataforma,
+                    'seguidores': inf.seguidores,
+                    'categoria': inf.categoria
+                } for inf in campana.influencers]) if campana.influencers else "[]"
+                session.flush()
+                return self._db_a_entidad(campana_db)
+            return campana
 
     def eliminar(self, id_campana: uuid.UUID) -> bool:
-        campana_db = self.session.query(CampanaDB).filter(
-            CampanaDB.id == id_campana).first()
-        if campana_db:
-            self.session.delete(campana_db)
-            self.session.commit()
-            return True
-        return False
+        with db_manager.get_session() as session:
+            campana_db = session.query(CampanaDB).filter(
+                CampanaDB.id == id_campana).first()
+            if campana_db:
+                session.delete(campana_db)
+                return True
+            return False
 
     def _entidad_a_db(self, campana: Campana) -> CampanaDB:
         return CampanaDB(
