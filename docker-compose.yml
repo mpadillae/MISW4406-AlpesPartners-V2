@@ -26,6 +26,7 @@ services:
       POSTGRES_DB: afiliaciones
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
     ports:
       - "5436:5432"
     volumes:
@@ -44,6 +45,7 @@ services:
       POSTGRES_DB: marca
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
     ports:
       - "5433:5432"
     volumes:
@@ -62,6 +64,7 @@ services:
       POSTGRES_DB: influencer
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
     ports:
       - "5434:5432"
     volumes:
@@ -80,6 +83,7 @@ services:
       POSTGRES_DB: tracking
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
     ports:
       - "5435:5432"
     volumes:
