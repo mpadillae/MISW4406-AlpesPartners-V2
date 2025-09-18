@@ -10,6 +10,21 @@ Este repositorio contiene la implementación de un sistema distribuido de micros
 | Johann Sebastian Páez Campos | js.paezc1@uniandes.edu.co |
 | Julián Oliveros Forero | je.oliverosf@uniandes.edu.co |
 
+***
+
+## 🔥 Implementación con Patrón Saga 🔥
+
+El proyecto ahora incluye una implementación del patrón Saga con orquestación para el manejo de transacciones distribuidas en la creación de campañas. Esta nueva funcionalidad proporciona:
+
+- ✅ Transacciones distribuidas con garantías de consistencia
+- ✅ Compensaciones automáticas en caso de fallos
+- ✅ Coordinación centralizada desde el servicio de afiliaciones
+- ✅ Trazabilidad completa del flujo de transacciones
+
+> 📖 **Documentación detallada**: [README_SAGA.md](./README_SAGA.md)
+
+***
+
 ## 📋 Tabla de contenidos
 - [✅ Prerrequisitos](#-prerrequisitos)
 - [🛠️ Tecnologías y herramientas utilizadas](#️-tecnologías-y-herramientas-utilizadas)
