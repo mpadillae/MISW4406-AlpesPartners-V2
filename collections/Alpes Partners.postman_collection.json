@@ -168,6 +168,114 @@
 			]
 		},
 		{
+			"name": "🔮 sagas",
+			"item": [
+				{
+					"name": "crear campaña usando saga",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extraer ID de campaña de la respuesta",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id_saga) {",
+									"        pm.collectionVariables.set('saga_id', responseJson.id_saga);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Campaña de Verano 2024\",\n    \"descripcion\": \"Promoción de productos de verano con influencers\",\n    \"tipo\": \"influencer\",\n    \"fecha_inicio\": \"2025-01-01T00:00:00\",\n    \"fecha_fin\": \"2025-12-31T23:59:59\",\n    \"presupuesto\": 15000,\n    \"marca\": {\n        \"id_marca\": \"{{marca_id}}\",\n        \"nombre_marca\": \"Nike\"\n    },\n    \"influencers\": [\n        {\n            \"nombre\": \"Ana García\",\n            \"plataforma\": \"Instagram\",\n            \"seguidores\": 150000,\n            \"categoria\": \"Fitness\"\n        },\n        {\n            \"nombre\": \"Carlos López\",\n            \"plataforma\": \"TikTok\",\n            \"seguidores\": 300000,\n            \"categoria\": \"Lifestyle\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url_afiliaciones}}/afiliaciones/campana-saga",
+							"host": [
+								"{{base_url_afiliaciones}}"
+							],
+							"path": [
+								"afiliaciones",
+								"campana-saga"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener sagas por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_afiliaciones}}/afiliaciones/saga/{{saga_id}}/estado",
+							"host": [
+								"{{base_url_afiliaciones}}"
+							],
+							"path": [
+								"afiliaciones",
+								"saga",
+								"{{saga_id}}",
+								"estado"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener historial de sagas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_afiliaciones}}/afiliaciones/sagas/historial",
+							"host": [
+								"{{base_url_afiliaciones}}"
+							],
+							"path": [
+								"afiliaciones",
+								"sagas",
+								"historial"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener estadisticas de sagas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_afiliaciones}}/afiliaciones/sagas/estadisticas",
+							"host": [
+								"{{base_url_afiliaciones}}"
+							],
+							"path": [
+								"afiliaciones",
+								"sagas",
+								"estadisticas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "🌐 tracking service",
 			"item": [
 				{
@@ -516,6 +624,11 @@
 		{
 			"key": "current_timestamp",
 			"value": ""
+		},
+		{
+			"key": "saga_id",
+			"value": "",
+			"type": "default"
 		}
 	]
 }

@@ -106,51 +106,6 @@ class ServicioAplicacionCampanaSaga:
         except Exception as e:
             raise
 
-    async def crear_campana_tradicional(self, id_marca: uuid.UUID, nombre: str, descripcion: str,
-                                       tipo: str, presupuesto: float, nombre_marca: str, influencers: List,
-                                       fecha_inicio=None, fecha_fin=None):
-        influencers_info = [
-            InfluencerInfo(
-                nombre=inf.nombre,
-                plataforma=inf.plataforma,
-                seguidores=inf.seguidores,
-                categoria=inf.categoria
-            ) for inf in influencers
-        ]
-        
-        campana = self.servicio_dominio.crear_campana(
-            id_marca=id_marca,
-            nombre=nombre,
-            descripcion=descripcion,
-            tipo=tipo,
-            presupuesto=presupuesto,
-            nombre_marca=nombre_marca,
-            influencers=influencers_info,
-            fecha_inicio=fecha_inicio,
-            fecha_fin=fecha_fin
-        )
-
-        evento = CampanaCreada(
-            id_campana=campana.id,
-            id_marca=campana.id_marca,
-            nombre=campana.nombre,
-            descripcion=campana.descripcion,
-            tipo=campana.tipo.value,
-            estado=campana.estado.value,
-            fecha_creacion=campana.fecha_creacion,
-            presupuesto=campana.presupuesto,
-            nombre_marca=campana.nombre_marca,
-            influencers=[{
-                'nombre': inf.nombre,
-                'plataforma': inf.plataforma,
-                'seguidores': inf.seguidores,
-                'categoria': inf.categoria
-            } for inf in campana.influencers]
-        )
-
-        await self.despachador.publicar_evento(evento, "eventos-campana")
-        return campana
-
     async def iniciar_campana(self, id_campana: uuid.UUID):
         campana = self.servicio_dominio.iniciar_campana(id_campana)
         eventos = campana.obtener_eventos()
