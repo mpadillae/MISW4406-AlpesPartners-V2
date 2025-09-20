@@ -135,6 +135,7 @@ docker-compose down -v
 
 | Servicio | URL base | Documentación API | Base de Datos |
 |----------|----------|-------------------|---------------|
+| **BFF (Backend for Frontend)** | http://localhost:8005 | http://localhost:8005/docs | - |
 | **Afiliaciones** | http://localhost:8001 | http://localhost:8001/docs | localhost:5436 |
 | **Marca** | http://localhost:8002 | http://localhost:8002/docs | localhost:5433 |
 | **Influencer** | http://localhost:8003 | http://localhost:8003/docs | localhost:5434 |
@@ -144,6 +145,7 @@ docker-compose down -v
 ### Health checks
 
 ```bash
+curl http://localhost:8005/health  # BFF
 curl http://localhost:8001/health  # Afiliaciones
 curl http://localhost:8002/health  # Marca
 curl http://localhost:8003/health  # Influencer
@@ -156,9 +158,21 @@ curl http://localhost:8004/health  # Tracking
 
 <img width="688" height="733" alt="diagramas-modulo entrega 4 drawio-2" src="https://github.com/user-attachments/assets/1987dc59-a49b-44bf-a3bf-6276331cc684" />
 
-El sistema está compuesto por **4 microservicios independientes**:
+El sistema está compuesto por **5 microservicios independientes**:
 
-### 1. 🎯 AFILIACIONES (Puerto 8001) - Servicio Orquestador
+### 1. 🌐 BFF (Puerto 8005) - Backend for Frontend
+- **Función**: Proporciona una API unificada para el frontend, agregando endpoints de afiliaciones y tracking
+- **Responsabilidades**: Proxy HTTP, agregación de servicios, simplificación de la comunicación frontend-backend
+- **Endpoints**: 
+  - `POST /afiliaciones/campana` - Crear campaña (proxy)
+  - `GET /afiliaciones/campana/{id}` - Obtener campaña (proxy)
+  - `GET /afiliaciones/campanas` - Listar campañas (proxy)
+  - `POST /tracking/evento` - Registrar evento de tracking (proxy)
+  - `GET /tracking/metricas/{id_campana}` - Obtener métricas (proxy)
+- **Patrón**: API Gateway + Proxy Pattern
+- **Comunicación**: HTTP síncrono con servicios downstream
+
+### 2. 🎯 AFILIACIONES (Puerto 8001) - Servicio Orquestador
 - **Función**: Coordina el flujo principal de campañas y publica eventos de integración
 - **Responsabilidades**: Crear campañas, iniciar campañas, gestionar estados
 - **Endpoints**: 
@@ -169,21 +183,21 @@ El sistema está compuesto por **4 microservicios independientes**:
 - **Base de datos**: `afiliaciones-db` (PostgreSQL - Puerto 5436)
 - **Patrón**: Command Handler + Event Publisher
 
-### 2. 🏢 MARCA (Puerto 8002) - Consumidor de Eventos
+### 3. 🏢 MARCA (Puerto 8002) - Consumidor de Eventos
 - **Función**: Procesa y almacena información específica de marcas participantes en campañas
 - **Responsabilidades**: Sincronizar datos de marca, mantener contexto de marca por campaña
 - **Evento que consume**: `CampanaCreada` 
 - **Base de datos**: `marca-db` (PostgreSQL - Puerto 5433)
 - **Patrón**: Event-Driven Consumer + Projection
 
-### 3. 👥 INFLUENCER (Puerto 8003) - Consumidor de Eventos
+### 4. 👥 INFLUENCER (Puerto 8003) - Consumidor de Eventos
 - **Función**: Gestiona información de influencers asociados a las campañas
 - **Responsabilidades**: Sincronizar datos de influencers, gestionar asignaciones
 - **Evento que consume**: `CampanaCreada`
 - **Base de datos**: `influencer-db` (PostgreSQL - Puerto 5434)
 - **Patrón**: Event-Driven Consumer + Projection
 
-### 4. 📊 TRACKING (Puerto 8004) - Métricas y Eventos
+### 5. 📊 TRACKING (Puerto 8004) - Métricas y Eventos
 - **Función**: Rastrea métricas, eventos de usuario y genera análisis de rendimiento
 - **Responsabilidades**: Registrar eventos de tracking, calcular métricas, generar reportes
 - **Endpoints**: 
@@ -438,6 +452,56 @@ PULSAR_URL=pulsar://pulsar:6650
 
 ## 📋 API Endpoints
 
+### 🌐 BFF (Backend for Frontend) - Puerto 8005
+
+El BFF actúa como un proxy unificado que expone todos los endpoints de afiliaciones y tracking a través de una sola API. Esto simplifica la comunicación del frontend al eliminar la necesidad de conocer múltiples URLs de servicios.
+
+#### Endpoints de Afiliaciones (Proxy)
+```http
+# Crear campaña
+POST /afiliaciones/campana
+Content-Type: application/json
+
+# Obtener campaña
+GET /afiliaciones/campana/{id_campana}
+
+# Listar campañas
+GET /afiliaciones/campanas
+
+# Iniciar campaña
+POST /afiliaciones/campana/{id_campana}/iniciar
+
+# Crear campaña con Saga
+POST /afiliaciones/campana-saga
+
+# Endpoints de Saga
+GET /afiliaciones/saga/{id_saga}/estado
+GET /afiliaciones/sagas
+GET /afiliaciones/sagas/historial
+GET /afiliaciones/sagas/estadisticas
+```
+
+#### Endpoints de Tracking (Proxy)
+```http
+# Registrar evento de tracking
+POST /tracking/evento
+Content-Type: application/json
+
+# Obtener métricas de campaña
+GET /tracking/metricas/{id_campana}
+
+# Obtener eventos de campaña
+GET /tracking/eventos/{id_campana}
+
+# Obtener métricas por marca
+GET /tracking/metricas/marca/{id_marca}
+```
+
+#### Health Check
+```http
+GET /health
+```
+
 ### 🎯 Servicio Afiliaciones (Puerto 8001)
 
 #### Crear Campaña
@@ -614,17 +678,23 @@ GET /tracking/eventos/{id_campana}
 
 ## 🧪 Colección de Postman
 
-El proyecto incluye una colección completa de Postman para facilitar las pruebas:
+El proyecto incluye colecciones completas de Postman para facilitar las pruebas:
 
 ### 📋 **Archivos Incluidos:**
-- [`Alpes Partners.postman_collection.json`](./collections/Alpes%20Partners.postman_collection.json) - Colección principal con todos los endpoints
-- [`Alpes Partners.postman_environment.json`](./collections/Alpes%20Partners.postman_environment.json) - Variables de entorno configuradas
+- [`Alpes Partners.postman_collection.json`](./collections/Alpes%20Partners.postman_collection.json) - Colección principal con todos los endpoints de servicios individuales
+- [`Alpes Partners BFF.postman_collection.json`](./collections/Alpes%20Partners%20BFF.postman_collection.json) - Colección específica para el BFF con endpoints unificados
+- [`Alpes Partners.postman_environment.json`](./collections/Alpes%20Partners.postman_environment.json) - Variables de entorno configuradas (incluye `base_url_bff`)
+
+### 🚀 **Uso Recomendado:**
+- **Para desarrollo y testing de servicios individuales**: Usar `Alpes Partners.postman_collection.json`
+- **Para frontend y testing integrado**: Usar `Alpes Partners BFF.postman_collection.json`
 
 ## 🚀 Características del Sistema
 
 ### ✅ **Características Implementadas:**
 
 - **🏗️ Arquitectura Hexagonal**: Separación clara de responsabilidades
+- **🌐 BFF Pattern**: Backend for Frontend para simplificar la comunicación frontend-backend
 - **📡 Event-Driven**: Comunicación asíncrona mediante eventos
 - **🔄 CQRS**: Separación de comandos y queries
 - **🎯 DDD**: Domain-Driven Design con bounded contexts
@@ -635,6 +705,7 @@ El proyecto incluye una colección completa de Postman para facilitar las prueba
 - **📖 Documentación API**: Swagger/OpenAPI automático
 - **🔐 Validación**: Pydantic para validación de datos
 - **🎛️ Configuración**: Variables de entorno para todos los parámetros
+- **🔄 Proxy Pattern**: BFF actúa como proxy transparente para servicios downstream
 
 ---
 

@@ -1,0 +1,460 @@
+{
+  "info": {
+    "_postman_id": "bff-alpes-partners-001",
+    "name": "Alpes Partners BFF",
+    "description": "Colección completa para probar el BFF (Backend for Frontend) de Alpes Partners que expone endpoints de afiliaciones y tracking",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13706451"
+  },
+  "item": [
+    {
+      "name": "✅ health checks",
+      "item": [
+        {
+          "name": "BFF - health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/health",
+              "host": ["{{base_url_bff}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BFF - eventos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/events",
+              "host": ["{{base_url_bff}}"],
+              "path": ["events"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🌐 BFF - Afiliaciones",
+      "item": [
+        {
+          "name": "crear campaña",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Extraer ID de campaña de la respuesta",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.id) {",
+                  "        pm.collectionVariables.set('campana_id', responseJson.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Campaña de Verano 2024\",\n    \"descripcion\": \"Promoción de productos de verano con influencers\",\n    \"tipo\": \"influencer\",\n    \"fecha_inicio\": \"2025-01-01T00:00:00\",\n    \"fecha_fin\": \"2025-12-31T23:59:59\",\n    \"presupuesto\": 15000,\n    \"marca\": {\n        \"id_marca\": \"{{marca_id}}\",\n        \"nombre_marca\": \"Nike\"\n    },\n    \"influencers\": [\n        {\n            \"nombre\": \"Ana García\",\n            \"plataforma\": \"Instagram\",\n            \"seguidores\": 150000,\n            \"categoria\": \"Fitness\"\n        },\n        {\n            \"nombre\": \"Carlos López\",\n            \"plataforma\": \"TikTok\",\n            \"seguidores\": 300000,\n            \"categoria\": \"Lifestyle\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campana"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "iniciar campaña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana/{{campana_id}}/iniciar",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campana", "{{campana_id}}", "iniciar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener campaña por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana/{{campana_id}}",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campana", "{{campana_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener todas las campañas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campanas",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campanas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔮 BFF - Sagas",
+      "item": [
+        {
+          "name": "crear campaña usando saga",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Extraer ID de saga de la respuesta",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.id_saga) {",
+                  "        pm.collectionVariables.set('saga_id', responseJson.id_saga);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Campaña Saga 2024\",\n    \"descripcion\": \"Promoción con patrón Saga\",\n    \"tipo\": \"influencer\",\n    \"fecha_inicio\": \"2025-01-01T00:00:00\",\n    \"fecha_fin\": \"2025-12-31T23:59:59\",\n    \"presupuesto\": 20000,\n    \"marca\": {\n        \"id_marca\": \"{{marca_id}}\",\n        \"nombre_marca\": \"Adidas\"\n    },\n    \"influencers\": [\n        {\n            \"nombre\": \"María Rodríguez\",\n            \"plataforma\": \"YouTube\",\n            \"seguidores\": 500000,\n            \"categoria\": \"Tech\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana-saga",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campana-saga"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener estado saga por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/saga/{{saga_id}}/estado",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "saga", "{{saga_id}}", "estado"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener todas las sagas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/sagas",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "sagas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener historial de sagas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/sagas/historial",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "sagas", "historial"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener estadísticas de sagas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/sagas/estadisticas",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "sagas", "estadisticas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 BFF - Tracking",
+      "item": [
+        {
+          "name": "registrar evento - vista",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_campana\": \"{{campana_id}}\",\n  \"tipo_evento\": \"vista\",\n  \"datos\": {\n    \"usuario\": \"user123\",\n    \"timestamp\": {{$timestamp}},\n    \"fuente\": \"instagram\",\n    \"dispositivo\": \"mobile\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/evento",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "evento"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar evento - click",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_campana\": \"{{campana_id}}\",\n  \"tipo_evento\": \"clic\",\n  \"datos\": {\n    \"usuario\": \"user123\",\n    \"timestamp\": {{$timestamp}},\n    \"elemento\": \"boton_cta\",\n    \"posicion\": \"header\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/evento",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "evento"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar evento - conversión",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_campana\": \"{{campana_id}}\",\n  \"tipo_evento\": \"conversion\",\n  \"datos\": {\n    \"usuario\": \"user123\",\n    \"timestamp\": {{$timestamp}},\n    \"valor_compra\": 150.50,\n    \"producto\": \"producto_verano_001\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/evento",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "evento"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener métricas por campaña",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/metricas/{{campana_id}}",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "metricas", "{{campana_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener eventos por campaña",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/eventos/{{campana_id}}",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "eventos", "{{campana_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener métricas por marca",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/metricas/marca/{{marca_id}}",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "metricas", "marca", "{{marca_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧾 BFF - Casos de prueba - errores",
+      "item": [
+        {
+          "name": "crear campaña - presupuesto inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Campaña con Error\",\n    \"descripcion\": \"Promoción con presupuesto inválido\",\n    \"tipo\": \"influencer\",\n    \"fecha_inicio\": \"2025-01-01T00:00:00\",\n    \"fecha_fin\": \"2025-12-31T23:59:59\",\n    \"presupuesto\": 0,\n    \"marca\": {\n        \"id_marca\": \"{{marca_id}}\",\n        \"nombre_marca\": \"Nike\"\n    },\n    \"influencers\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana",
+              "host": ["{{base_url_bff}}"],
+              "path": ["afiliaciones", "campana"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener campaña inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_bff}}/afiliaciones/campana/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url_bff}}"],
+              "path": [
+                "afiliaciones",
+                "campana",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar evento - campaña inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_campana\": \"00000000-0000-0000-0000-000000000000\",\n  \"tipo_evento\": \"vista\",\n  \"datos\": {\n    \"usuario\": \"user123\",\n    \"timestamp\": {{$timestamp}}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url_bff}}/tracking/evento",
+              "host": ["{{base_url_bff}}"],
+              "path": ["tracking", "evento"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generar IDs únicos si no existen",
+          "if (!pm.collectionVariables.get('marca_id')) {",
+          "    pm.collectionVariables.set('marca_id', pm.variables.replaceIn('{{$randomUUID}}'));",
+          "}",
+          "",
+          "// Generar timestamp actual",
+          "pm.collectionVariables.set('current_timestamp', Math.floor(Date.now() / 1000));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "",
+          "// Log de respuesta para debugging",
+          "console.log('Response Status:', pm.response.code);",
+          "console.log('Response Body:', pm.response.text());"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url_bff",
+      "value": "http://localhost:8005"
+    },
+    {
+      "key": "marca_id",
+      "value": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    {
+      "key": "campana_id",
+      "value": ""
+    },
+    {
+      "key": "current_timestamp",
+      "value": ""
+    },
+    {
+      "key": "saga_id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
