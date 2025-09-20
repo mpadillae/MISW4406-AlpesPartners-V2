@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import uuid
 from pydantic import BaseModel
 from dominio.servicios import ServicioTracking
@@ -23,7 +23,7 @@ class MetricasResponse(BaseModel):
     nombre_campana: str
     estado: str
     fecha_creacion: str
-    fecha_inicio: str = None
+    fecha_inicio: Optional[str] = None
     presupuesto: float
     metricas: Dict[str, Any]
 
