@@ -10,6 +10,170 @@ Este repositorio contiene la implementación de un sistema distribuido de micros
 | Johann Sebastian Páez Campos | js.paezc1@uniandes.edu.co |
 | Julián Oliveros Forero | je.oliverosf@uniandes.edu.co |
 
+## 📋 Actividades por miembro del equipo
+
+### Miguel Fernando Padilla Espino
+**Rol Principal**: Arquitecto de Microservicios y Patrón Saga
+- **Microservicios a cargo**: 
+  - Servicio de Afiliaciones (puerto 8001) - Orquestador principal
+  - Implementación del patrón Saga con orquestación
+- **Actividades realizadas**:
+  - Diseño e implementación de la arquitectura hexagonal en el servicio de afiliaciones
+  - Desarrollo del patrón Saga para transacciones distribuidas
+  - Implementación de CQRS (Command Query Responsibility Segregation)
+  - Creación de eventos de dominio y publicación en Apache Pulsar
+  - Diseño de la lógica de negocio para campañas de marketing
+  - Implementación de repositorios y servicios de dominio
+  - Configuración de la base de datos PostgreSQL para afiliaciones
+  - Documentación del patrón Saga en README_SAGA.md
+
+### Johann Sebastian Páez Campos
+**Rol Principal**: Desarrollador de Microservicios de Dominio y DevOps
+- **Microservicios a cargo**:
+  - Servicio de Marca (puerto 8002)
+  - Servicio de Influencer (puerto 8003)
+- **Actividades realizadas**:
+  - Implementación de consumidores de eventos para el servicio de marca
+  - Desarrollo del servicio de influencer con arquitectura hexagonal
+  - Creación de proyecciones de datos basadas en eventos
+  - Implementación de repositorios SQLAlchemy para ambos servicios
+  - Configuración de bases de datos PostgreSQL independientes
+  - Desarrollo de DTOs y mapeadores para transformación de datos
+  - Implementación de handlers para eventos de integración
+  - Configuración de Docker y Docker Compose para los servicios
+  - **Despliegue de la infraestructura completa en Google Cloud Platform (GCP)**
+  - Configuración de servicios en la nube para todos los microservicios
+  - Gestión de recursos y optimización de costos en GCP
+
+### Julián Oliveros Forero
+**Rol Principal**: Desarrollador de Microservicios de Análisis y BFF
+- **Microservicios a cargo**:
+  - Servicio de Tracking (puerto 8004)
+  - BFF - Backend for Frontend (puerto 8005)
+- **Actividades realizadas**:
+  - Implementación del servicio de tracking y métricas
+  - Desarrollo del BFF como proxy unificado para frontend
+  - Creación de endpoints para registro de eventos de tracking
+  - Implementación de cálculo de métricas de campañas
+  - Desarrollo de la colección de Postman para testing
+  - Configuración de comunicación HTTP entre microservicios
+  - Implementación de health checks para todos los servicios
+  - Documentación técnica y guías de uso
+  - Configuración de Docker Compose para el ecosistema completo
+  - Resolución de problemas de serialización JSON (UUID, datetime)
+  - Implementación de patrones de proxy y API Gateway
+
+## 🔄 Distribución de responsabilidades
+
+### Arquitectura y Patrones
+- **Miguel**: Patrón Saga, CQRS, Event-Driven Architecture
+- **Johann**: Event Consumers, Projections, Domain Modeling
+- **Julián**: BFF Pattern, Proxy Pattern, API Integration
+
+### Microservicios
+- **Miguel**: Afiliaciones (Orquestador principal)
+- **Johann**: Marca + Influencer (Consumidores de eventos)
+- **Julián**: Tracking + BFF (Análisis y Frontend)
+
+### Tecnologías y Herramientas
+- **Miguel**: Apache Pulsar, Event Sourcing, PostgreSQL (Afiliaciones)
+- **Johann**: Event Consumers, SQLAlchemy, PostgreSQL (Marca/Influencer), Google Cloud Platform, Docker
+- **Julián**: FastAPI, HTTPX, Docker, Postman, PostgreSQL (Tracking)
+
+### Documentación y Testing
+- **Miguel**: README_SAGA.md, Documentación de patrones
+- **Johann**: Documentación de servicios de dominio
+- **Julián**: README principal, Colecciones Postman, Guías de uso
+
+## 📊 Métricas del proyecto
+
+### Estructura de archivos por miembro
+```
+📦 MISW4406-AlpesPartners-V2
+├── afiliaciones/           # Miguel - 15 archivos
+│   ├── aplicacion/         # CQRS, Handlers, DTOs
+│   ├── dominio/            # Entidades, Eventos, Servicios
+│   ├── infraestructura/    # Repositorios, Despachadores
+│   └── modulos/sagas/      # Implementación del patrón Saga
+├── marca/                  # Johann - 8 archivos
+│   ├── dominio/            # Entidades de marca
+│   └── infraestructura/    # Consumidores de eventos
+├── influencer/             # Johann - 8 archivos
+│   ├── dominio/            # Entidades de influencer
+│   └── infraestructura/    # Consumidores de eventos
+├── tracking/               # Julián - 8 archivos
+│   ├── dominio/            # Entidades de tracking
+│   └── infraestructura/    # Repositorios de métricas
+├── bff/                    # Julián - 8 archivos
+│   ├── api/                # Endpoints proxy
+│   └── servicios.py        # Clientes HTTP
+└── collections/            # Julián - 2 archivos
+    ├── Alpes Partners.postman_collection.json
+    └── Alpes Partners BFF.postman_collection.json
+```
+
+### Tecnologías implementadas por miembro
+- **Miguel**: Python, FastAPI, Apache Pulsar, PostgreSQL, SQLAlchemy, Pydantic, Avro
+- **Johann**: Python, FastAPI, Apache Pulsar, PostgreSQL, SQLAlchemy, Pydantic, Event Consumers, Google Cloud Platform, Docker
+- **Julián**: Python, FastAPI, HTTPX, Docker, Postman, PostgreSQL, SQLAlchemy, Pydantic
+
+### Patrones de diseño implementados
+- **Miguel**: Saga Pattern, CQRS, Event Sourcing, Domain Events, Repository Pattern
+- **Johann**: Event-Driven Architecture, Projection Pattern, Consumer Pattern, Domain Modeling, Cloud Deployment Pattern
+- **Julián**: BFF Pattern, Proxy Pattern, API Gateway, Client-Server Pattern
+
+### Endpoints desarrollados
+- **Miguel**: 8 endpoints (Afiliaciones + Sagas)
+- **Johann**: 0 endpoints directos (solo consumidores de eventos)
+- **Julián**: 12 endpoints (Tracking: 4, BFF Proxy: 8)
+
+## 🚀 Contribuciones técnicas detalladas
+
+### Miguel Fernando Padilla Espino
+**Commits principales y desarrollos**:
+- Implementación completa del servicio de afiliaciones con arquitectura hexagonal
+- Desarrollo del patrón Saga con orquestación para transacciones distribuidas
+- Creación de 15+ archivos en el módulo de afiliaciones
+- Implementación de CQRS con separación de comandos y queries
+- Desarrollo de eventos de dominio y publicación en Apache Pulsar
+- Configuración de la base de datos PostgreSQL para afiliaciones
+- Documentación técnica del patrón Saga (README_SAGA.md)
+
+### Johann Sebastian Páez Campos
+**Commits principales y desarrollos**:
+- Implementación de consumidores de eventos para marca e influencer
+- Desarrollo de 16+ archivos en los módulos de marca e influencer
+- Creación de proyecciones de datos basadas en eventos de integración
+- Implementación de repositorios SQLAlchemy para ambos servicios
+- Configuración de bases de datos PostgreSQL independientes
+- Desarrollo de DTOs y mapeadores para transformación de datos
+- Implementación de handlers para eventos de integración
+- **Despliegue completo de la infraestructura en Google Cloud Platform (GCP)**
+- Configuración y gestión de servicios en la nube
+- Optimización de recursos y costos en GCP
+
+### Julián Oliveros Forero
+**Commits principales y desarrollos**:
+- Implementación completa del servicio de tracking y métricas
+- Desarrollo del BFF (Backend for Frontend) como proxy unificado
+- Creación de 18+ archivos en los módulos de tracking y BFF
+- Desarrollo de colecciones de Postman para testing integral
+- Configuración de Docker Compose para el ecosistema completo
+- Resolución de problemas de serialización JSON (UUID, datetime)
+- Documentación principal del proyecto (README.md)
+- Implementación de patrones de proxy y API Gateway
+- Configuración de comunicación HTTP entre microservicios
+
+## 📈 Resumen de contribuciones
+
+| Miembro | Microservicios | Archivos | Endpoints | Patrones | Documentación | Infraestructura |
+|---------|----------------|----------|-----------|----------|---------------|-----------------|
+| Miguel | 1 (Afiliaciones) | 15+ | 8 | 5 | README_SAGA.md | - |
+| Johann | 2 (Marca, Influencer) | 16+ | 0 | 5 | Servicios dominio | **GCP Deployment** |
+| Julián | 2 (Tracking, BFF) | 18+ | 12 | 4 | README.md, Postman | - |
+
+**Total del proyecto**: 5 microservicios, 49+ archivos, 20 endpoints, 13 patrones de diseño
+
 ***
 
 ## 🔥 Implementación con Patrón Saga 🔥
