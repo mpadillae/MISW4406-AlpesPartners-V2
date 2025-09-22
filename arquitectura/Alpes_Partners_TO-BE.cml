@@ -1,0 +1,64 @@
+/* Context Map Simplificado - Alpes Partners
+ * Enfoque en relaciones principales entre bounded contexts
+ */
+
+Domain GestionAsociacionesEstrategicas {
+  domainVisionStatement = "Plataforma modular y escalable que conecta marcas con socios estratégicos para gestionar el ciclo de vida completo de programas de afiliación, marketing de influencers y métricas de rendimiento."
+  
+  Subdomain CampanasAfiliacion {
+    type = CORE_DOMAIN
+    domainVisionStatement = "Automatizar la creación, orquestación y seguimiento de campañas de afiliación con múltiples socios estratégicos."
+  }
+  
+  Subdomain GestionMarcas {
+    type = SUPPORTING_DOMAIN
+    domainVisionStatement = "Mantener información contextual y proyecciones de marcas participantes en campañas."
+  }
+  
+  Subdomain GestionInfluencers {
+    type = SUPPORTING_DOMAIN  
+    domainVisionStatement = "Gestionar el registro, vinculación y seguimiento de influencers en campañas específicas."
+  }
+  
+  Subdomain MetricasRendimiento {
+    type = SUPPORTING_DOMAIN
+    domainVisionStatement = "Recopilar, procesar y exponer métricas de rendimiento de campañas en tiempo real."
+  }
+  
+  Subdomain IntegracionCliente {
+    type = GENERIC_SUBDOMAIN
+    domainVisionStatement = "Proporcionar una interfaz unificada y simplificada para clientes frontend."
+  }
+}
+
+BoundedContext BC_Afiliaciones implements CampanasAfiliacion {
+}
+
+BoundedContext BC_Marcas implements GestionMarcas {
+}
+
+BoundedContext BC_Influencers implements GestionInfluencers {
+}
+
+BoundedContext BC_Tracking implements MetricasRendimiento {
+}
+
+BoundedContext BC_BFF implements IntegracionCliente {
+}
+
+ContextMap AlpesPartners_Simple {
+  state = TO_BE
+  
+  contains BC_Afiliaciones
+  contains BC_Marcas
+  contains BC_Influencers
+  contains BC_Tracking
+  contains BC_BFF
+
+  BC_BFF [OHS, PL] -> BC_Afiliaciones
+  BC_BFF [OHS, PL] -> BC_Tracking
+  BC_Marcas [ACL] <- BC_Afiliaciones
+  BC_Influencers [ACL] <- BC_Afiliaciones
+  BC_Tracking [ACL] <- BC_Afiliaciones
+}
+
