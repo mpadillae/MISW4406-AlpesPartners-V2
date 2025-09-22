@@ -48,7 +48,6 @@ Se ha implementado exitosamente un BFF (Backend for Frontend) para el sistema Al
 ### 3. **Endpoints del Sistema**
 
 - `GET /health` - Health check del BFF
-- `GET /events` - Obtener eventos recientes de Pulsar
 - `GET /docs` - Documentación automática (Swagger)
 
 ## 🚀 Cómo Ejecutar
@@ -120,9 +119,6 @@ curl -X POST http://localhost:8005/afiliaciones/campana \
 - **Afiliaciones**: `http://localhost:8001/health`
 - **Tracking**: `http://localhost:8004/health`
 
-### Eventos en Tiempo Real
-
-- **Eventos BFF**: `http://localhost:8005/events`
 
 ### Documentación API
 

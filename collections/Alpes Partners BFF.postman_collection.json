@@ -22,19 +22,6 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "BFF - eventos",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url_bff}}/events",
-              "host": ["{{base_url_bff}}"],
-              "path": ["events"]
-            }
-          },
-          "response": []
         }
       ]
     },
