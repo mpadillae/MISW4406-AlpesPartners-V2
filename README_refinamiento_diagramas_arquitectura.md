@@ -1,3 +1,58 @@
+# Mapa de Contexto: TO-BE
+
+### Diagrama del Mapa de Contexto
+
+![Mapa de Contexto TO-BE](./arquitectura/modelo-contexto-TO-BE.png)
+
+### Explicación del Mapa de Contexto
+
+El mapa de contexto representa la arquitectura de Alpes Partners, basada en los principios de **Domain-Driven Design (DDD)**. Esta arquitectura define cómo los diferentes contextos de negocio interactúan entre sí y establece las relaciones y patrones de integración.
+
+#### Bounded Contexts Identificados:
+
+**1. BC_BFF (Backend for Frontend)**
+- **Rol:** Punto de entrada y orquestador del sistema
+- **Responsabilidad:** Actúa como gateway que coordina las operaciones entre los diferentes bounded contexts
+- **Patrón:** Implementa **OHS** (Open Host Service) y **PL** (Published Language) para exponer servicios públicos
+
+**2. BC_Afiliaciones**
+- **Rol:** Contexto central del dominio de negocio
+- **Responsabilidad:** Gestiona el core del negocio relacionado con afiliaciones, campañas y relaciones comerciales
+- **Posición:** Contexto upstream que provee servicios a otros contextos y downstream que consume servicios del BFF
+
+**3. BC_Influencers**
+- **Rol:** Gestión especializada de influencers
+- **Responsabilidad:** Maneja perfiles, métricas y comportamiento de influencers
+- **Patrón:** Utiliza **ACL** (Anti-Corruption Layer) para mantener su integridad mientras se integra con Afiliaciones
+
+**4. BC_Marcas**
+- **Rol:** Gestión de marcas y productos
+- **Responsabilidad:** Administra información de marcas, catálogos y productos
+- **Patrón:** Implementa **ACL** para protegerse de cambios en otros contextos
+
+**5. BC_Tracking**
+- **Rol:** Sistema de seguimiento y métricas
+- **Responsabilidad:** Recopila, procesa y reporta métricas de rendimiento y seguimiento
+- **Patrón:** Utiliza **ACL** para mantener independencia en su modelo de datos
+
+#### Patrones de Integración Utilizados:
+
+- **U (Upstream):** Indica que el contexto es proveedor de servicios
+- **D (Downstream):** Indica que el contexto es consumidor de servicios
+- **ACL (Anti-Corruption Layer):** Patrón que protege la integridad de un contexto de cambios en otros contextos
+- **OHS (Open Host Service):** Define una API pública y estable para que otros contextos la consuman
+- **PL (Published Language):** Establece un lenguaje común y bien documentado para la integración
+
+#### Características de la Arquitectura:
+
+- **Autonomía:** Cada bounded context mantiene su propia lógica de dominio y modelo de datos
+- **Acoplamiento bajo:** Los contextos interactúan a través de interfaces bien definidas
+- **Escalabilidad:** Cada contexto puede evolucionar y escalarse independientemente
+- **Integridad:** Los patrones ACL protegen cada contexto de cambios externos no deseados
+- **Claridad:** Separación clara de responsabilidades según el dominio de negocio
+
+***
+
 # Refinamiento de Diagramas de Arquitectura
 
 ## Descripción
